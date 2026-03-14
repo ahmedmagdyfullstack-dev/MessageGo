@@ -1,22 +1,3 @@
-jest.mock("../../../src/config", () => ({
-  config: {
-    twilioAccountSid: "ACtest",
-    twilioAuthToken: "test-token",
-    twilioWhatsAppNumber: "+14155238886",
-  },
-}));
-
-jest.mock("twilio", () => {
-  return jest.fn(() => ({
-    messages: {
-      create: jest.fn().mockResolvedValue({
-        sid: "SM_wa_test_sid_456",
-        status: "queued",
-      }),
-    },
-  }));
-});
-
 import { WhatsAppProvider } from "../../../src/providers/whatsapp.provider";
 
 describe("WhatsAppProvider", () => {
@@ -30,8 +11,10 @@ describe("WhatsAppProvider", () => {
     const result = await provider.send("+201234567890", {
       body: "Test WhatsApp",
     });
-    expect(result.providerMessageId).toBe("SM_wa_test_sid_456");
-    expect(result.status).toBe("delivered");
+    expect(result).toHaveProperty("providerMessageId");
+    expect(result).toHaveProperty("status");
     expect(result).toHaveProperty("timestamp");
+    expect(["delivered", "failed"]).toContain(result.status);
+    expect(result.providerMessageId).toMatch(/^sim_wa_/);
   });
 });

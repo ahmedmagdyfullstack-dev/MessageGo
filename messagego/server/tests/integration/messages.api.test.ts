@@ -1,37 +1,3 @@
-jest.mock("@sendgrid/mail", () => ({
-  setApiKey: jest.fn(),
-  send: jest.fn().mockResolvedValue([
-    {
-      statusCode: 202,
-      headers: { "x-message-id": "sg-integration-test" },
-      body: "",
-    },
-  ]),
-}));
-
-jest.mock("twilio", () => {
-  return jest.fn(() => ({
-    messages: {
-      create: jest
-        .fn()
-        .mockResolvedValue({ sid: "SM_integration_test", status: "queued" }),
-    },
-  }));
-});
-
-jest.mock("../../src/config", () => ({
-  config: {
-    port: 3001,
-    nodeEnv: "test",
-    sendgridApiKey: "SG.test",
-    sendgridFromEmail: "test@test.com",
-    twilioAccountSid: "ACtest",
-    twilioAuthToken: "test",
-    twilioPhoneNumber: "+10000000000",
-    twilioWhatsAppNumber: "+14155238886",
-  },
-}));
-
 import request from "supertest";
 import { createApp } from "../../src/app";
 import { messageStore } from "../../src/store/message.store";

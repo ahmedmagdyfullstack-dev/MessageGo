@@ -44,6 +44,7 @@ export default function App() {
   return (
     <div className="app">
       <h1>MessageGO Playground</h1>
+      <p className="subtitle">Send test messages via Email, SMS, or WhatsApp and see the results.</p>
       <div className="top-section">
         <MessageForm onSend={handleSend} />
         <ResponseViewer response={response} />

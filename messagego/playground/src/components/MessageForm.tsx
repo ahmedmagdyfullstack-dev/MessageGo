@@ -3,10 +3,22 @@ import { sendMessage } from '../api/client';
 
 type Channel = 'sms' | 'email' | 'whatsapp';
 
+const channelLabels: Record<Channel, string> = {
+  sms: 'SMS',
+  email: 'Email',
+  whatsapp: 'WhatsApp',
+};
+
 const placeholders: Record<Channel, string> = {
   sms: '+12025551234',
   email: 'user@example.com',
   whatsapp: '+201234567890',
+};
+
+const toHints: Record<Channel, string> = {
+  sms: 'Phone number in international format (e.g. +1...)',
+  email: 'Email address',
+  whatsapp: 'Phone number in international format (e.g. +20...)',
 };
 
 interface Props {
@@ -42,19 +54,23 @@ export default function MessageForm({ onSend }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="message-form">
-      <h2>Send Message</h2>
+      <h2>Send a Message</h2>
+
+      <div className="channel-selector">
+        {(Object.keys(channelLabels) as Channel[]).map(ch => (
+          <button
+            key={ch}
+            type="button"
+            className={`channel-btn ${channel === ch ? 'active' : ''}`}
+            onClick={() => setChannel(ch)}
+          >
+            {channelLabels[ch]}
+          </button>
+        ))}
+      </div>
 
       <label>
-        Channel
-        <select value={channel} onChange={e => setChannel(e.target.value as Channel)}>
-          <option value="sms">SMS</option>
-          <option value="email">Email</option>
-          <option value="whatsapp">WhatsApp</option>
-        </select>
-      </label>
-
-      <label>
-        To
+        Recipient
         <input
           type="text"
           value={to}
@@ -62,6 +78,7 @@ export default function MessageForm({ onSend }: Props) {
           placeholder={placeholders[channel]}
           required
         />
+        <span className="field-hint">{toHints[channel]}</span>
       </label>
 
       {channel === 'email' && (
@@ -78,7 +95,7 @@ export default function MessageForm({ onSend }: Props) {
       )}
 
       <label>
-        Body
+        Message
         <textarea
           value={body}
           onChange={e => setBody(e.target.value)}
@@ -88,8 +105,8 @@ export default function MessageForm({ onSend }: Props) {
         />
       </label>
 
-      <button type="submit" disabled={loading}>
-        {loading ? 'Sending...' : 'Send Message'}
+      <button type="submit" className="send-btn" disabled={loading}>
+        {loading ? 'Sending...' : `Send ${channelLabels[channel]}`}
       </button>
     </form>
   );

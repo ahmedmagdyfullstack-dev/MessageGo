@@ -11,6 +11,12 @@ interface Props {
   onRefresh: () => void;
 }
 
+const channelLabels: Record<string, string> = {
+  sms: 'SMS',
+  email: 'Email',
+  whatsapp: 'WhatsApp',
+};
+
 export default function MessageLog({ messages, onSelect, onRefresh }: Props) {
   return (
     <div className="message-log">
@@ -19,28 +25,31 @@ export default function MessageLog({ messages, onSelect, onRefresh }: Props) {
         <button onClick={onRefresh} type="button">Refresh</button>
       </div>
       {messages.length === 0 ? (
-        <p className="empty">No messages yet.</p>
+        <p className="empty">No messages sent yet. Use the form above to send your first message.</p>
       ) : (
         <table>
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Message ID</th>
               <th>Channel</th>
-              <th>To</th>
+              <th>Recipient</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
             {messages.map(msg => (
               <tr key={msg.id} onClick={() => onSelect(msg.id)} className="clickable">
-                <td>{msg.id}</td>
-                <td>{msg.channel}</td>
+                <td className="mono">{msg.id}</td>
+                <td>{channelLabels[msg.channel] || msg.channel}</td>
                 <td>{msg.to}</td>
-                <td className={`status-${msg.status}`}>{msg.status}</td>
+                <td><span className={`badge badge-${msg.status}`}>{msg.status}</span></td>
               </tr>
             ))}
           </tbody>
         </table>
+      )}
+      {messages.length > 0 && (
+        <p className="table-hint">Click a row to view full details</p>
       )}
     </div>
   );
