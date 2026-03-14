@@ -6,8 +6,7 @@
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
     "build": "tsc",
-    "test": "jest --forceExit --detectOpenHandles",
-    "format": "prettier --write \"src/**/*.ts\""
+    "test": "jest --forceExit --detectOpenHandles"
   },
   "dependencies": {
     "cors": "^2.8.5",
